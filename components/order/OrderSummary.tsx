@@ -3,10 +3,25 @@ import { useStore } from "@/src/store"
 import ProductDetail from "../products/ProductDetails";
 import { useMemo } from "react";
 import { formatPrice } from "@/src/utils";
+import { createOrder } from "@/actions/create-order-action";
+import { OrderSchema } from "@/src/schema";
 
 export default function OrderSummary() {
     const order = useStore(state => state.order);
     const total = useMemo(() => order.reduce((acc, item) => acc + item.subtotal, 0), [order]);
+
+    const handleCreateOrder = (formData: FormData) => {
+      const data = {
+        name: formData.get("name"),
+        
+      }
+
+      const result = OrderSchema.safeParse(data);
+      console.log(result);
+
+      return
+      createOrder();
+    }
 
     return(
       <aside className="lg:h-screen lg:overflow-y-scroll md:w-64 lg:w-96 p-5 bg-white">
@@ -26,6 +41,25 @@ export default function OrderSummary() {
                 Total: <span className="font-normal">{formatPrice(total)}</span>
               </p>
             </div>
+
+            <form 
+              className="w-full mt-10 space-y-5"
+              action={handleCreateOrder}
+            >
+              <input
+                type="text"
+                placeholder="Nombre"
+                className="w-full p-2 border border-gray-300 rounded-md"
+                name="name"
+              />
+
+              <input
+                type="submit"
+                placeholder="Nombre"
+                className="w-full p-2 border border-gray-300 rounded-md font-bold cursor-pointer bg-gray-800 text-white"
+                value={"CONFIRMAR PEDIDO"}
+              />
+            </form>
           </div>
         )  
         }
